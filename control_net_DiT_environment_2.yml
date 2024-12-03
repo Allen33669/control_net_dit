@@ -1,0 +1,14 @@
+name: control_net_DiT
+channels:
+  - pytorch
+  - defaults
+  - nvidia
+dependencies:
+  - python=3.8
+  - pip=20.3
+  - cudatoolkit=11.3
+  - torchvision=0.13.1
+  - numpy=1.23.1
+  - pytorch = 1.13
+  - pytorch-cuda=11.7
+  - pip:
