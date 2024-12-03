@@ -11,7 +11,7 @@ This project includes code from<br>
 <h5>  project_control_net_dit_1_1_0.ipynb:</h5>
 <h5>    add DiT before the control net input blocks</h5>
 <h5>    like this:</h5>
-![ControlNet_DiT architecture](https://github.com/Allen33669/control_net_dit/blob/main/control_net_dit.png)
+<img width="770" alt="control_net_dit" src="https://github.com/user-attachments/assets/c5ecaa75-81f0-43fa-a46f-88767b69d557">
 <h5>    produce evaluation dataset</h5>
 <h5>  project_control_net_dit_evaluation_1_1_0.ipynb:</h5>
 <h5>    calculate clip score, FID, Aesthetic Predictor score</h5>
