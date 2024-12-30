@@ -14,9 +14,11 @@
 <h3>captum:<h3>
 <h3>License:<h3>
 <h3>Captum is BSD licensed, as found in the LICENSE file.<h3>
-<h3>
-<h3>
-<h3>
+<br>
+<br>
+<br>
+<br>
+<br>
 <h1>Personal portfolio space:</h1>
 <h2>ControlNet_DiT:</h2>
 <h3>1.3.1: </h3>
@@ -34,7 +36,7 @@
 <h5>  project_control_net_dit_1_1_0.ipynb:</h5>
 <h5>    add DiT before the control net input blocks</h5>
 <h5>    like this:</h5>
-![ControlNet_DiT architecture](https://github.com/username/repository/blob/main/example.png)
+<img src="[your_relative_path_here](https://github.com/username/repository/blob/main/example.png)" title="ControlNet_DiT architecture">
 <h5>    produce evaluation dataset</h5>
 <h5>  project_control_net_dit_evaluation_1_1_0.ipynb:</h5>
 <h5>    calculate clip score, FID, Aesthetic Predictor score</h5>
