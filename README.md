@@ -21,6 +21,16 @@
 <br>
 <h1>Personal portfolio space:</h1>
 <h2>ControlNet_DiT:</h2>
+<h3>1.5.5: </h3>
+<h5>  project_control_net_dit_1_5_5.ipynb:</h5>
+<h5>    XAI:</h5>
+<h5>      input: image, target: loss</h5>
+<h5>      methods:</h5>
+<h5>        Feature Ablation</h5>
+<h5>        Layer Feature Ablation</h5>
+<h5>        Neuron Feature Ablation</h5>
+<h5>        Feature Permutation</h5>
+<br>
 <h3>1.3.1: </h3>
 <h5>  project_control_net_dit_1_3_1.ipynb:</h5>
 <h5>    regularization: add l1 loss and l2 loss</h5>

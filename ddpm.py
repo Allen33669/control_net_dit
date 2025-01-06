@@ -78,7 +78,6 @@ class DDPM(pl.LightningModule):
                  ucg_training=None,
                  reset_ema=False,
                  reset_num_ema_updates=False,
-                 lime_sample = None, 
                  ):
         super().__init__()
         assert parameterization in ["eps", "x0", "v"], 'currently only supporting "eps" and "x0" and "v"'
@@ -137,10 +136,12 @@ class DDPM(pl.LightningModule):
         if self.ucg_training:
             self.ucg_prng = np.random.RandomState()
 
-        self.lime_samples_image_x = []
-        self.lime_samples_image_y = []
-        self.lime_samples_text_x = []
-        self.lime_samples_text_y = []
+        self.lime_samples_image_x = [] #XAI image samples input
+        self.lime_samples_image_y = [] #XAI image samples output
+        self.lime_samples_text_x = [] #XAI text samples input
+        self.lime_samples_text_y = [] #XAI text samples output
+        self.lime_sample = 0, 
+        self.feature_permutation_sample = 0, 
 
     def register_schedule(self, given_betas=None, beta_schedule="linear", timesteps=1000,
                           linear_start=1e-4, linear_end=2e-2, cosine_s=8e-3):
@@ -484,17 +485,20 @@ class DDPM(pl.LightningModule):
         input['text'] = input_text_new
         loss = self.training_step(input, 0)
         self.lime_samples_text_y.append(loss)
+        
         return loss
     
     def kernel_shap_image(self, input_hint):
-        self.lime_samples_image_x.append(input_hint)
-        input = self.lime_sample
+        if input_hint.shape[0] > 1 :
+          input = self.feature_permutation_sample
+        else:
+          input = self.lime_sample
+
         input['hint'] = input_hint
+
         loss = self.training_step(input, 0)
-        self.lime_samples_image_y.append(loss)
+        
         return loss
-
-
 
     @torch.no_grad()
     def validation_step(self, batch, batch_idx):
@@ -630,6 +634,8 @@ class LatentDiffusion(DDPM):
         self.l1_lambda = l1_lambda
         self.l2_lambda = l2_lambda
         self.save_hyperparameters()
+        self.xai_sample_forward_x = 0
+        self.xai_sample_forward_c = 0
 
     def make_cond_schedule(self, ):
         self.cond_ids = torch.full(size=(self.num_timesteps,), fill_value=self.num_timesteps - 1, dtype=torch.long)
@@ -883,10 +889,12 @@ class LatentDiffusion(DDPM):
 
     def shared_step(self, batch, **kwargs):
         x, c = self.get_input(batch, self.first_stage_key)
-        loss = self(x, c)
+        loss = LatentDiffusion.forward(self, x, c)
         return loss
 
     def forward(self, x, c, *args, **kwargs):
+        self.xai_sample_forward_x = x
+        self.xai_sample_forward_c = c
         t = torch.randint(0, self.num_timesteps, (x.shape[0],), device=self.device).long()
         if self.model.conditioning_key is not None:
             assert c is not None
