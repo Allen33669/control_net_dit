@@ -21,6 +21,14 @@
 <br>
 <h1>Personal portfolio space:</h1>
 <h2>ControlNet_DiT:</h2>
+<h3>2.0.0: </h3>
+<h5>  project_control_net_dit_2_0_0.ipynb (no real run and test):</h5>
+<h5>    Rectified Flow:</h5>
+<h5>      Loss function for velocity of Rectifeid Flow</h5>
+<h5>      euler sampling</h5>
+<h5>      Reflow</h5>
+<h5>      Distillation</h5>
+<br>
 <h3>1.5.5: </h3>
 <h5>  project_control_net_dit_1_5_5.ipynb:</h5>
 <h5>    XAI:</h5>

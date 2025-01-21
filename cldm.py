@@ -418,6 +418,7 @@ class ControlNet(nn.Module):
             linear(time_embed_dim, time_embed_dim),
         )
 
+
         self.input_blocks_dit = nn.ModuleList([])
 
         self.input_blocks = nn.ModuleList(
@@ -584,6 +585,7 @@ class ControlNet(nn.Module):
 
         h = x.type(self.dtype)
 
+        
         current_h_h = 0
         for module, zero_conv in zip(self.input_blocks, self.zero_convs):
             h_n, h_c, h_h, h_w = h.shape

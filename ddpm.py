@@ -136,10 +136,10 @@ class DDPM(pl.LightningModule):
         if self.ucg_training:
             self.ucg_prng = np.random.RandomState()
 
-        self.lime_samples_image_x = [] #XAI image samples input
-        self.lime_samples_image_y = [] #XAI image samples output
-        self.lime_samples_text_x = [] #XAI text samples input
-        self.lime_samples_text_y = [] #XAI text samples output
+        self.lime_samples_image_x = [] 
+        self.lime_samples_image_y = [] 
+        self.lime_samples_text_x = [] 
+        self.lime_samples_text_y = [] 
         self.lime_sample = 0, 
         self.feature_permutation_sample = 0, 
 
@@ -487,7 +487,7 @@ class DDPM(pl.LightningModule):
         self.lime_samples_text_y.append(loss)
         
         return loss
-    
+
     def kernel_shap_image(self, input_hint):
         if input_hint.shape[0] > 1 :
           input = self.feature_permutation_sample
@@ -508,6 +508,7 @@ class DDPM(pl.LightningModule):
             loss_dict_ema = {key + '_ema': loss_dict_ema[key] for key in loss_dict_ema}
         self.log_dict(loss_dict_no_ema, prog_bar=False, logger=True, on_step=False, on_epoch=True)
         self.log_dict(loss_dict_ema, prog_bar=False, logger=True, on_step=False, on_epoch=True)
+
         return loss
 
     def on_train_batch_end(self, *args, **kwargs):
@@ -941,48 +942,17 @@ class LatentDiffusion(DDPM):
         return mean_flat(kl_prior) / np.log(2.0)
 
     def p_losses(self, x_start, cond, t, noise=None):
-        noise = default(noise, lambda: torch.randn_like(x_start))
-        x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
-        model_output = self.apply_model(x_noisy, t, cond)
-
         loss_dict = {}
         prefix = 'train' if self.training else 'val'
-
-        if self.parameterization == "x0":
-            target = x_start
-        elif self.parameterization == "eps":
-            target = noise
-        elif self.parameterization == "v":
-            target = self.get_v(x_start, noise, t)
-        else:
-            raise NotImplementedError()
-
-        loss_simple = self.get_loss(model_output, target, mean=False).mean([1, 2, 3])
+        x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
+        T = 1
+        eps = 1e-3
+        t = torch.rand(1) * (T - eps) + eps
+        predict_v = self.apply_model(x_noisy, t, cond)
+        target = x_start - x_noisy
+        loss_simple = self.get_loss(predict_v, target, mean=False).mean([1, 2, 3])
         loss_dict.update({f'{prefix}/loss_simple': loss_simple.mean()})
-
-        logvar_t = self.logvar[t].to(self.device)
-        loss = loss_simple / torch.exp(logvar_t) + logvar_t
-        # loss = loss_simple / torch.exp(self.logvar) + self.logvar
-        if self.learn_logvar:
-            loss_dict.update({f'{prefix}/loss_gamma': loss.mean()})
-            loss_dict.update({'logvar': self.logvar.data.mean()})
-
-        loss = self.l_simple_weight * loss.mean()
-
-        loss_vlb = self.get_loss(model_output, target, mean=False).mean(dim=(1, 2, 3))
-        loss_vlb = (self.lvlb_weights[t] * loss_vlb).mean()
-        loss_dict.update({f'{prefix}/loss_vlb': loss_vlb})
-        loss += (self.original_elbo_weight * loss_vlb)
-        loss_dict.update({f'{prefix}/loss': loss})
-
-        l1_regular_loss = sum(p.abs().sum() for p in self.parameters())
-        loss_dict.update({f'{prefix}/l1_regular_loss': l1_regular_loss})
-
-        l2_regular_loss = sum(p.pow(2.0).sum() for p in self.parameters())
-        loss_dict.update({f'{prefix}/l2_regular_loss': l2_regular_loss})
-
-        loss += self.l1_lambda * l1_regular_loss + self.l2_lambda * l2_regular_loss
-        loss_dict.update({f'{prefix}/total_loss': loss})
+        loss = loss_simple
 
         return loss, loss_dict
 
