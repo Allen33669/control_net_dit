@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+background-image: url("https://images.pexels.com/photos/19670/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+background-size: cover; 
+background-repeat: no-repeat; 
+background-attachment: fixed; 
+background-position: center; 
+text-align: center;
+opacity: 0.8;
+}
+h1   {
+color: rgb(0, 128, 128);
+font-family: Lucida Handwriting;
+text-align: center;
+}
+h2   {
+color: rgb(20, 20, 20);
+font-family: Copperplate;
+}
+h3   {
+color: rgb(40, 40, 40);
+font-family: Lucida Console;
+}
+p    {
+color: rgb(60, 60, 60);
+font-family: Georgia;
+}
+</style>
+</head>
+
+<body>
+<h1>Application: ControlNet, Dit, Rectified Flow, lora</h1>
+<br>
+<h2>usage:</h2>
+<h3>original model:</h3>
+<p>transfer learning target, freeze the weights when training</p>
+<br>
+<h3>ControlNet, Dit:</h3>
+<p>using for customize the rectified flow to produce a distillation model</p>
+<p>the weights can be used in other rectified flow to produce a new distillation model</p>
+<br>
+<h3>Rectified Flow:</h3>
+<p>compared with DDIM and DDPM, reduce inference time and steps with the distillation model</p>
+<br>
+<h3>lora:</h3>
+<p>using to customize the distillation model and reduce weight parameters by decomposing the original weight matrix to low rank matrices</p>
+<br>
+<p>______________________________________________________________________________________________________________________________________</p>
+<h2>steps:</h2>
+<h3>ControlNet, Dit:</h3>
+<p>use the original model to produce a control net</p>
+<p>modify the control net with Dit</p>
+<p>combine the original model and the Dit control net</p>
+<br>
+<h3>Rectified Flow:</h3>
+<p>modify the loss function for the velocity of rectified flow</p>
+<p>train the model with the original 1 samples, only train the Dit control net</p> 
+<p>store Dit control net 1 rectified flow 1 weight</p>
+<p>produce rectified flow 1 samples</p>
+<p>reflow the model with rectified flow 1 samples, only train the Dit control net</p>
+<p>produce rectified flow 2 samples</p>
+<p>store Dit control net 1 rectified flow 2 weight</p>
+<p>create the distillation model</p>
+<p>train the distillation model with rectified flow 2 samples</p>
+<p>store rectified flow distillation 1 weight</p>
+<br>
+<h3>lora:</h3>
+<p>create lora class for linear, conv2D, and etc.</p>
+<p>replace the layers of the distillation model with lora class</p>
+<p>train with the distillation model and lora 1 samples</p>
+<p>store distillation lora 1 weight</p>
+<p>train with the distillation model and lora 2 samples</p>
+<p>store distillation lora 2 weight</p>
+<br>
+<h3>inference with multiple loras:</h3>
+<p>create the distillation model</p>
+<p>replace the layers of the distillation model with lora class</p>
+<p>merge rectified flow distillation 1 weight, distillation lora 1 weight, and distillation lora 2 weight. distillation lora 1 weight, and distillation lora 2 weight with scale factor</p>
+<p>load the weight into the distillation model</p>
+<p>using the distillation model with euler sampling</p>
+<br>
+<br>
+<br>
+</body>
+</html>
