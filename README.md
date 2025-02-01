@@ -1,36 +1,5 @@
 <head>
-<style>
-body {
-background-image: url("https://images.pexels.com/photos/19670/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
-background-size: cover; 
-background-repeat: no-repeat; 
-background-attachment: fixed; 
-background-position: center; 
-text-align: center;
-opacity: 0.8;
-}
-h1   {
-color: rgb(0, 128, 128);
-font-family: Lucida Handwriting;
-text-align: center;
-}
-h2   {
-color: rgb(20, 20, 20);
-font-family: Copperplate;
-}
-h3   {
-color: rgb(40, 40, 40);
-font-family: Lucida Console;
-}
-h5   {
-color: rgb(60, 60, 60);
-font-family: Georgia;
-}
-p    {
-color: rgb(60, 60, 60);
-font-family: Georgia;
-}
-</style>
+
 </head>
 
 <body>
